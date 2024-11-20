@@ -1,0 +1,92 @@
+import java.util.*;
+import java.io.*;
+
+class WeatherData {
+    private String date; // Format: MM-DD
+    private int year;
+    private double temperature;
+
+    public WeatherData(String date, int year, double temperature) {
+        this.date = date;
+        this.year = year;
+        this.temperature = temperature;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public double getTemperature() {
+        return temperature;
+    }
+}
+
+public class WeatherTrendAnalyzer {
+
+    public static void main(String[] args) {
+        List<WeatherData> weatherDataList = new ArrayList<>();
+
+        // Load weather data
+        loadSampleData(weatherDataList); // Replace with file reading if needed
+
+        // Analyze trends
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter a date to analyze (MM-DD): ");
+        String date = scanner.nextLine();
+
+        analyzeTrends(weatherDataList, date);
+    }
+
+    public static void analyzeTrends(List<WeatherData> data, String date) {
+        List<WeatherData> filteredData = new ArrayList<>();
+        for (WeatherData wd : data) {
+            if (wd.getDate().equals(date)) {
+                filteredData.add(wd);
+            }
+        }
+
+        if (filteredData.isEmpty()) {
+            System.out.println("No data available for the specified date.");
+            return;
+        }
+
+        // Calculate trends
+        double totalTemp = 0;
+        double minTemp = Double.MAX_VALUE;
+        double maxTemp = Double.MIN_VALUE;
+
+        for (WeatherData wd : filteredData) {
+            double temp = wd.getTemperature();
+            totalTemp += temp;
+            if (temp < minTemp) minTemp = temp;
+            if (temp > maxTemp) maxTemp = temp;
+        }
+
+        double avgTemp = totalTemp / filteredData.size();
+        System.out.println("Analysis for date: " + date);
+        System.out.println("Number of years recorded: " + filteredData.size());
+        System.out.printf("Average Temperature: %.2f°C\n", avgTemp);
+        System.out.printf("Minimum Temperature: %.2f°C\n", minTemp);
+        System.out.printf("Maximum Temperature: %.2f°C\n", maxTemp);
+
+        // Trend calculation (optional: implement advanced stats like regression)
+        double firstYearTemp = filteredData.get(0).getTemperature();
+        double lastYearTemp = filteredData.get(filteredData.size() - 1).getTemperature();
+        double trend = lastYearTemp - firstYearTemp;
+        System.out.printf("Temperature Trend: %.2f°C over %d years\n", trend, filteredData.size());
+    }
+
+    public static void loadSampleData(List<WeatherData> data) {
+        // Sample data - replace with file reading
+        data.add(new WeatherData("06-15", 2000, 22.5));
+        data.add(new WeatherData("06-15", 2001, 23.0));
+        data.add(new WeatherData("06-15", 2002, 21.8));
+        data.add(new WeatherData("06-15", 2003, 24.1));
+        data.add(new WeatherData("06-15", 2004, 23.5));
+        data.add(new WeatherData("06-15", 2023, 25.0));
+    }
+}
